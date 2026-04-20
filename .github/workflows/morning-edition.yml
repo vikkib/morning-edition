@@ -1,0 +1,42 @@
+name: Morning Edition
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # 7am CDT
+  workflow_dispatch:       # manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch RSS feeds
+        run: |
+          curl -sL --max-time 15 'https://www.therundown.ai/feed' > /tmp/rundown.xml || echo "failed" > /tmp/rundown.xml
+          curl -sL --max-time 15 'https://www.sabrina.dev/feed' > /tmp/sabrina.xml || echo "failed" > /tmp/sabrina.xml
+          curl -sL --max-time 15 'https://carney.co/feed' > /tmp/carnage.xml || echo "failed" > /tmp/carnage.xml
+          wc -c /tmp/rundown.xml /tmp/sabrina.xml /tmp/carnage.xml
+
+      - name: Generate HTML briefing
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 generate.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "Morning Edition Bot"
+          git config user.email "bot@3bees.digital"
+          git add index.html
+          git commit -m "Morning Edition $(date '+%Y-%m-%d')" || echo "No changes"
+          git push
+
+      - name: Notify Slack
+        run: |
+          DATE=$(date '+%A, %B %-d, %Y')
+          curl -s -X POST -H 'Content-type: application/json' \
+            --data "{\"text\": \"*Morning Edition is ready* -- $DATE\n<https://vikkib.github.io/morning-edition/|Open your briefing>\"}" \
+            '${{ secrets.SLACK_WEBHOOK }}'
