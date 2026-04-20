@@ -10,7 +10,7 @@ def parse_rss(path, source):
         tree = ET.parse(path)
         root = tree.getroot()
         channel = root.find("channel") or root
-        for item in (channel.findall("item") or [])[:10]:
+        for item in (channel.findall("item") or [])[:5]:
             title = (item.findtext("title") or "").strip()
             link  = (item.findtext("link")  or "").strip()
             desc  = re.sub(r"<[^>]+>", "", item.findtext("description") or "").strip()[:400]
@@ -63,7 +63,7 @@ Return ONLY a JSON object with exactly this structure. Use ONLY real stories fro
   }}
 }}
 
-Include EXACTLY 10 stories. FOR YOU = directly relevant to Vikki's roles above. Sentence case only. No em dashes. Contractions throughout.
+Include EXACTLY 10 stories. MANDATORY: at least 2 stories from EACH source (TechCrunch AI, Sabrina.dev, VentureBeat). FOR YOU = directly relevant to Vikki's roles above. Sentence case only. No em dashes. Contractions throughout.
 Return ONLY the JSON, no other text."""
 
     resp = subprocess.run([
