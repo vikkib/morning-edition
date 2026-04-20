@@ -35,10 +35,11 @@
     .source-tag { font-family: 'Courier Prime', monospace; font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 11px; display: flex; align-items: center; gap: 9px; }
     .source-tag::before { content: ''; display: block; width: 22px; height: 1px; background: var(--gold); flex-shrink: 0; }
     .for-you { display: inline-block; font-family: 'Courier Prime', monospace; font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bg); background: var(--gold); padding: 2px 6px 1px; border-radius: 2px; box-shadow: 0 0 10px rgba(200,150,62,0.35); }
-    .hed-xl { font-family: 'Playfair Display', serif; font-size: clamp(26px,3.2vw,42px); font-weight: 700; line-height: 1.14; color: var(--text); margin-bottom: 16px; transition: color 0.2s ease; }
-    .hed-l { font-family: 'Playfair Display', serif; font-size: clamp(19px,2.2vw,26px); font-weight: 700; line-height: 1.2; color: var(--text); margin-bottom: 12px; transition: color 0.2s ease; }
-    .hed-m { font-family: 'Playfair Display', serif; font-size: clamp(16px,1.5vw,19px); font-weight: 700; line-height: 1.28; color: var(--text); margin-bottom: 10px; transition: color 0.2s ease; }
-    article:hover .hed-xl, article:hover .hed-l, article:hover .hed-m { color: var(--gold-bright); }
+    .hed-xl { font-family: 'Playfair Display', serif; font-size: clamp(26px,3.2vw,42px); font-weight: 700; line-height: 1.14; color: var(--text); margin-bottom: 16px; }
+    .hed-l { font-family: 'Playfair Display', serif; font-size: clamp(19px,2.2vw,26px); font-weight: 700; line-height: 1.2; color: var(--text); margin-bottom: 12px; }
+    .hed-m { font-family: 'Playfair Display', serif; font-size: clamp(16px,1.5vw,19px); font-weight: 700; line-height: 1.28; color: var(--text); margin-bottom: 10px; }
+    .hed-xl a, .hed-l a, .hed-m a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
+    .hed-xl a:hover, .hed-l a:hover, .hed-m a:hover { color: var(--gold-bright); }
     .body { font-family: 'Lora', serif; font-size: 0.875rem; line-height: 1.78; color: rgba(237,231,213,0.7); }
     .body + .body { margin-top: 10px; }
     .pull-quote { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.05rem; line-height: 1.55; color: var(--gold-bright); border-left: 2px solid var(--gold); padding-left: 18px; margin: 18px 0; }
@@ -85,7 +86,7 @@
 <body>
   <div class="wrap">
     <header class="masthead">
-      <p class="sources-line">The Rundown AI &nbsp;&middot;&nbsp; Sabrina.dev &nbsp;&middot;&nbsp; Daily Carnage</p>
+      <p class="sources-line">TechCrunch AI &nbsp;&middot;&nbsp; Sabrina.dev &nbsp;&middot;&nbsp; VentureBeat</p>
       <hr class="rule-thin">
       <h1 class="masthead-title">Morning Edition</h1>
       <div class="masthead-meta">
@@ -100,25 +101,26 @@
     <section class="lead-section">
       
       <article class="lead-story">
-        <div class="source-tag">Sabrina.dev <span class="for-you">For you</span></div>
-        <h2 class="hed-xl">6 ways I cut my Claude token usage in half</h2>
-        <p class="pull-quote">&ldquo;If you're on the $20/month Claude plan, you absolutely need to implement these tips to reduce your Claude token consumption.&rdquo;</p>
-        <p class="body">Here's the thing: if you're using Claude daily like you are, token costs add up fast. Sabrina just dropped practical ways to cut your consumption in half, which matters when you're running automations and building vibecoded apps on a budget.</p>
-        <p class="body">This isn't theoretical stuff either. These are real optimizations you can implement today to stretch your Claude subscription further while keeping quality high. For a solo operator juggling multiple client projects, that's real money back in your pocket.</p>
+        <div class="source-tag">VentureBeat <span class="for-you">For you</span></div>
+        <h2 class="hed-xl"><a href="https://venturebeat.com/technology/anthropic-just-launched-claude-design-an-ai-tool-that-turns-prompts-into-prototypes-and-challenges-figma" target="_blank" rel="noopener">Anthropic launches Claude Design to turn prompts into prototypes</a></h2>
+        <p class="pull-quote">&ldquo;Design tools just got a conversational upgrade that's ready to challenge Figma's reign.&rdquo;</p>
+        <p class="body">Anthropic's new Claude Design tool lets you create polished designs, interactive prototypes, slide decks, and marketing collateral just by describing what you want. You're getting fine-grained editing controls plus the conversational interface you're already used to with Claude. It's available now in research preview for all paid Claude subscribers.</p>
+        <p class="body">This is Anthropic Labs' biggest product move yet, and it's worth paying attention to as an AI consultant. Your small business clients who've been intimidated by traditional design tools now have a genuinely powerful alternative that plays to their strengths: clear communication and iterative feedback.</p>
       </article>
       <div class="lead-right">
         
         <article class="secondary-story">
-          <div class="source-tag">Sabrina.dev <span class="for-you">For you</span></div>
-          <h2 class="hed-l">Claude and Remotion unlock unlimited cheap video generation</h2>
-          <p class="body">You can now generate animated explainer videos, product demos, and data visualizations directly through Claude plus Remotion. This is a game-changer for creating content at scale without expensive video tools, which fits perfectly into your content creation workflow on LinkedIn.</p>
+          <div class="source-tag">VentureBeat <span class="for-you">For you</span></div>
+          <h2 class="hed-l"><a href="https://venturebeat.com/technology/salesforce-launches-headless-360-to-turn-its-entire-platform-into-infrastructure-for-ai-agents" target="_blank" rel="noopener">Salesforce turns its entire platform into AI agent infrastructure</a></h2>
+          <p class="body">Salesforce just exposed every capability in its system as APIs and MCP tools so AI agents can operate without opening a browser. This "Headless 360" move signals that enterprise software's entire architecture is being rebuilt around autonomous agents. It's a seismic shift if you're advising enterprise clients on their AI strategy.</p>
         </article>
         
         <div class="stat-block">
-          <div class="source-tag">Sabrina.dev </div>
-          <div class="stat-number">2+ million followers, 32+ million views</div>
-          <div class="stat-label">In the last 30 days alone</div>
-          <p class="stat-context">Sabrina's reach is exploding, and most of that traction comes from Claude-focused tutorials and automation tips. It signals there's massive appetite for practical AI skills right now, especially from people who want to actually use these tools.</p>
+          <div class="source-tag">VentureBeat </div>
+          <div class="stat-number">32+ million</div>
+          <div class="stat-label">Views in the last 30 days,
+from one creator's AI content</div>
+          <p class="stat-context">Viral AI content is reshaping how people learn these tools. There's real opportunity for consultants and creators who can translate complex features into digestible, actionable insights.</p>
         </div>
       </div>
     </section>
@@ -126,41 +128,46 @@
     <section class="stories-section">
       <div class="col">
         <article class="story-item">
-          <div class="source-tag">Sabrina.dev <span class="for-you">For you</span></div>
-          <h3 class="hed-m">5 insane Claude Code use cases from a 1-hour masterclass</h3>
-          <p class="body">The gap between knowing Claude exists and actually having it save you 15+ hours weekly is this masterclass. It's pure execution stuff; real people showing how they're using Claude Code to solve actual business problems, not theoretical demos.</p>
+          <div class="source-tag">VentureBeat <span class="for-you">For you</span></div>
+          <h3 class="hed-m"><a href="https://venturebeat.com/security/most-enterprises-cant-stop-stage-three-ai-agent-threats-venturebeat-survey-finds" target="_blank" rel="noopener">Most enterprises can't stop stage-three AI agent threats</a></h3>
+          <p class="body">A VentureBeat survey of 108 enterprises found that most orgs lack proper safeguards to prevent rogue AI agents from causing damage. The gap? Monitoring without enforcement, enforcement without isolation. This is critical stuff if you're advising enterprises on AI agent deployment and governance.</p>
         </article>
         <article class="story-item">
-          <div class="source-tag">Sabrina.dev </div>
-          <h3 class="hed-m">Secret commands for Claude Code</h3>
-          <p class="body">There are hidden commands most people don't know about in Claude Code. These are the shortcuts and tricks that power users leverage to work faster, which could be useful for your automation building.</p>
+          <div class="source-tag">TechCrunch AI </div>
+          <h3 class="hed-m"><a href="https://techcrunch.com/2026/04/20/nsa-spies-are-reportedly-using-anthropics-mythos-despite-pentagon-feud/" target="_blank" rel="noopener">NSA reportedly using Anthropic's Mythos despite Pentagon feud</a></h3>
+          <p class="body">Even with the Pentagon labeling Anthropic a supply-chain risk, the NSA's still leveraging Anthropic's restricted Mythos model. It's a weird dynamic showing that capability sometimes trumps ideology in government procurement. Worth tracking how these relationships evolve.</p>
         </article>
         <article class="story-item">
-          <div class="source-tag">Sabrina.dev </div>
-          <h3 class="hed-m">Secret codes for ChatGPT</h3>
-          <p class="body">Sabrina's sharing lesser-known keywords and tricks for ChatGPT that unlock more functionality. Even though you're a Claude-first user, knowing what ChatGPT can do is handy for client conversations and competitive awareness.</p>
+          <div class="source-tag">VentureBeat </div>
+          <h3 class="hed-m"><a href="https://venturebeat.com/technology/openai-debuts-gpt-rosalind-a-new-limited-access-model-for-life-sciences-and-broader-codex-plugin-on-github" target="_blank" rel="noopener">OpenAI debuts GPT-Rosalind for life sciences research</a></h3>
+          <p class="body">OpenAI just launched a specialized model designed to accelerate drug discovery and lab workflows, plus a broader Codex plugin for GitHub. It's a smart vertical play showing how companies are building domain-specific models rather than just scaling horizontal foundation models.</p>
         </article></div>
       <div class="col">
         <article class="story-item">
-          <div class="source-tag">Sabrina.dev <span class="for-you">For you</span></div>
-          <h3 class="hed-m">Claude just changed content creation forever with video tutorial</h3>
-          <p class="body">This is a step-by-step walkthrough of using Claude to make and edit videos with the free Remotion skill. Since you're building your creator brand on LinkedIn, this could be a new content production method that doesn't require expensive software.</p>
+          <div class="source-tag">TechCrunch AI </div>
+          <h3 class="hed-m"><a href="https://techcrunch.com/2026/04/18/ai-chip-startup-cerebras-files-for-ipo/" target="_blank" rel="noopener">AI chip startup Cerebras files for IPO</a></h3>
+          <p class="body">Cerebras just filed for its IPO off the back of deals with AWS and OpenAI (reportedly worth $10+ billion). The AI chip wars are heating up, and this signals that investors still see major ROI potential in specialized hardware for LLM inference.</p>
         </article>
         <article class="story-item">
-          <div class="source-tag">Sabrina.dev <span class="for-you">For you</span></div>
-          <h3 class="hed-m">5 insane Claude Code and video prompts</h3>
-          <p class="body">Remotion is an open-source framework for video creation, and Claude now works with it directly. These prompts show exactly how to get Claude generating video assets, which opens doors for your small business clients who want professional content without the price tag.</p>
+          <div class="source-tag">TechCrunch AI <span class="for-you">For you</span></div>
+          <h3 class="hed-m"><a href="https://techcrunch.com/2026/04/18/the-app-store-is-booming-again-and-ai-may-be-why/" target="_blank" rel="noopener">The App Store is booming again, and AI may be why</a></h3>
+          <p class="body">New data from Appfigures shows a massive swell of app launches in 2026, suggesting AI tools are fueling a mobile software boom. This is your signal that the barrier to entry for app creation is collapsing, which means more small business clients might ask you about AI-powered app ideas.</p>
         </article>
         <article class="story-item">
-          <div class="source-tag">Sabrina.dev </div>
-          <h3 class="hed-m">Comprehensive analysis of Claude Code source leak</h3>
-          <p class="body">A technical deep dive on the second Claude source code leak. It's security-adjacent stuff worth staying aware of, especially if you're consulting on AI tools for enterprise clients like State Farm.</p>
+          <div class="source-tag">VentureBeat <span class="for-you">For you</span></div>
+          <h3 class="hed-m"><a href="https://venturebeat.com/orchestration/should-my-enterprise-ai-agent-do-that-nanoclaw-and-vercel-launch-easier-agentic-policy-setting-and-approval-dialogs-across-15-messaging-apps" target="_blank" rel="noopener">NanoClaw and Vercel make it easier to set AI agent policies</a></h3>
+          <p class="body">These companies just launched tools that let you set approval workflows and policies for AI agents across 15 messaging apps. It's solving the "sandbox versus keys to the kingdom" dilemma enterprises face when deploying autonomous agents. Useful reference point if you're helping clients think through agent governance.</p>
         </article></div>
       <div class="col">
         <article class="story-item">
-          <div class="source-tag">Sabrina.dev </div>
-          <h3 class="hed-m">Shroom safety guide for beginners</h3>
-          <p class="body">Harm reduction content for a specific audience. Not directly relevant to your work, but worth noting Sabrina's diversifying into health and wellness topics alongside tech.</p>
+          <div class="source-tag">TechCrunch AI </div>
+          <h3 class="hed-m"><a href="https://techcrunch.com/2026/04/20/fermi-ceo-and-cfo-depart-texas-nuclear-power-ai/" target="_blank" rel="noopener">Fermi's CEO and CFO suddenly depart amid Texas expansion headwinds</a></h3>
+          <p class="body">The AI nuclear power startup co-founded by Rick Perry just lost its top two leaders. It's a reminder that even well-funded moonshot ventures face real operational challenges. The broader AI infrastructure race isn't as smooth as the hype suggests.</p>
+        </article>
+        <article class="story-item">
+          <div class="source-tag">VentureBeat <span class="for-you">For you</span></div>
+          <h3 class="hed-m"><a href="https://venturebeat.com/infrastructure/are-we-getting-what-we-paid-for-how-to-turn-ai-momentum-into-measurable-value" target="_blank" rel="noopener">Enterprise AI is shifting from 'what can we build' to 'what's the ROI'</a></h3>
+          <p class="body">Enterprises are waking up to AI sprawl, rising inference costs, and lack of visibility into actual business value. The conversation's moving from capability to measurable outcomes. This is exactly where consultants who can connect AI investments to real business metrics add enormous value.</p>
         </article></div>
     </section>
 
@@ -169,8 +176,8 @@
       <div class="colophon">
         <div class="colophon-text">
           Morning Edition is curated daily<br>
-          from The Rundown AI, Sabrina.dev,<br>
-          and Daily Carnage.<br><br>
+          from TechCrunch AI, Sabrina.dev,<br>
+          and VentureBeat.<br><br>
           Stories selected for business owners<br>
           who use AI to do real work.
         </div>
