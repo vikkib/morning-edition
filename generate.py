@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 import json, os, re, subprocess
-from datetime import datetime
+from datetime import datetime, date
 
 ANTHROPIC_API_KEY = os.environ["ANTHROPIC_API_KEY"]
 
@@ -21,70 +21,69 @@ def parse_rss(path, source):
     return stories
 
 stories = []
-stories += parse_rss("/tmp/rundown.xml", "The Rundown AI")
+stories += parse_rss("/tmp/techcrunch.xml", "TechCrunch AI")
 stories += parse_rss("/tmp/sabrina.xml", "Sabrina.dev")
-stories += parse_rss("/tmp/carnage.xml", "Daily Carnage")
+stories += parse_rss("/tmp/venturebeat.xml", "VentureBeat")
+
 print(f"Total stories parsed: {len(stories)}")
 
 now = datetime.utcnow()
 today_long = now.strftime("%A, %B %-d, %Y")
-today_short = now.strftime("%Y-%m-%d")
-
-# Build issue number from days since launch (Apr 19 2026 = Issue 1)
-from datetime import date
 delta = (date(now.year, now.month, now.day) - date(2026, 4, 19)).days + 1
 issue_no = max(1, delta)
 
 if not stories:
     curated = None
 else:
-    prompt = f"""Today is {today_long}. You're curating a daily newspaper-style morning briefing for Vikki Baptiste.
+    prompt = f"""Today is {today_long}. Curating a daily newspaper-style morning briefing for Vikki Baptiste.
 
-Raw RSS stories:
+Raw RSS stories (include the EXACT url field in your response for each story):
 {json.dumps(stories, indent=2)}
 
-Vikki is: AI consultant for tech-resistant small businesses, Product Owner for enterprise search at State Farm (Fortune 50), WordPress/Divi web designer, solo operator who builds automations and vibecoded apps, creator of AI Answer Audit, uses Claude daily, LinkedIn as primary marketing channel.
+Vikki is: AI consultant for small businesses, Product Owner for enterprise search at State Farm, WordPress/Divi web designer, solo operator, creator of AI Answer Audit, LinkedIn as primary marketing channel.
 
-Structure the best stories into this EXACT JSON format. Select real stories from the feed only — do NOT fabricate.
+Structure the best stories into this EXACT JSON. Use ONLY stories from the feed. Preserve each story's exact URL in the url field.
 
 {{
   "lead": {{
     "source": "source name",
+    "url": "exact url from the feed",
     "for_you": true or false,
     "headline": "sentence case headline",
-    "pull_quote": "a punchy 1-sentence pull quote from the summary",
-    "body1": "first paragraph, 2-3 sentences, snarky-warm, plain language, contractions",
-    "body2": "second paragraph, 2-3 sentences continuing the thought"
+    "pull_quote": "punchy 1-sentence pull quote",
+    "body1": "first paragraph, 2-3 sentences, snarky-warm, contractions",
+    "body2": "second paragraph, 2-3 sentences"
   }},
   "secondary": {{
     "source": "source name",
+    "url": "exact url from the feed",
     "for_you": true or false,
     "headline": "sentence case headline",
-    "body": "2-3 sentences, snarky-warm, plain language, contractions"
+    "body": "2-3 sentences, snarky-warm, contractions"
   }},
   "stat": {{
     "source": "source name",
-    "number": "a striking number or percentage from one of the stories (just the number/% itself)",
+    "number": "a striking number or % from one of the stories",
     "label": "what the number means, 1-2 short lines",
-    "context": "1-2 sentences of why it matters"
+    "context": "1-2 sentences why it matters"
   }},
   "col1": [
-    {{"source": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}},
-    {{"source": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}},
-    {{"source": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}}
+    {{"source": "...", "url": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}},
+    {{"source": "...", "url": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}},
+    {{"source": "...", "url": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}}
   ],
   "col2": [
-    {{"source": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}},
-    {{"source": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}},
-    {{"source": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}}
+    {{"source": "...", "url": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}},
+    {{"source": "...", "url": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}},
+    {{"source": "...", "url": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}}
   ],
   "col3": [
-    {{"source": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}},
-    {{"source": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}}
+    {{"source": "...", "url": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}},
+    {{"source": "...", "url": "...", "for_you": true/false, "headline": "...", "body": "2-3 sentences"}}
   ]
 }}
 
-Rules: sentence case only, no em dashes (use commas or semicolons), contractions throughout, never say "but here's the part nobody talks about". FOR YOU = directly relevant to Vikki's specific roles above. Return ONLY the JSON object, no other text."""
+Rules: sentence case, no em dashes, contractions throughout, never say "but here's the part nobody talks about". Return ONLY the JSON object."""
 
     response = subprocess.run([
         "curl", "-s", "-X", "POST",
@@ -112,6 +111,9 @@ def for_you_badge(flag):
 def source_tag(source, for_you=False):
     return f'<div class="source-tag">{source} {for_you_badge(for_you)}</div>'
 
+def linked(headline, url, cls):
+    return f'<a href="{url}" target="_blank" rel="noopener">{headline}</a>' if url else headline
+
 if curated:
     lead = curated["lead"]
     sec  = curated["secondary"]
@@ -120,7 +122,7 @@ if curated:
     lead_html = f"""
       <article class="lead-story">
         {source_tag(lead['source'], lead.get('for_you'))}
-        <h2 class="hed-xl">{lead['headline']}</h2>
+        <h2 class="hed-xl">{linked(lead['headline'], lead.get('url'), 'hed-xl')}</h2>
         <p class="pull-quote">&ldquo;{lead['pull_quote']}&rdquo;</p>
         <p class="body">{lead['body1']}</p>
         <p class="body">{lead['body2']}</p>
@@ -129,7 +131,7 @@ if curated:
     sec_html = f"""
         <article class="secondary-story">
           {source_tag(sec['source'], sec.get('for_you'))}
-          <h2 class="hed-l">{sec['headline']}</h2>
+          <h2 class="hed-l">{linked(sec['headline'], sec.get('url'), 'hed-l')}</h2>
           <p class="body">{sec['body']}</p>
         </article>"""
 
@@ -141,13 +143,13 @@ if curated:
           <p class="stat-context">{stat['context']}</p>
         </div>"""
 
-    def col_html(stories):
+    def col_html(items):
         out = ""
-        for s in stories:
+        for s in items:
             out += f"""
         <article class="story-item">
           {source_tag(s['source'], s.get('for_you'))}
-          <h3 class="hed-m">{s['headline']}</h3>
+          <h3 class="hed-m">{linked(s['headline'], s.get('url'), 'hed-m')}</h3>
           <p class="body">{s['body']}</p>
         </article>"""
         return out
@@ -196,10 +198,11 @@ html = f"""<!DOCTYPE html>
     .source-tag {{ font-family: 'Courier Prime', monospace; font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 11px; display: flex; align-items: center; gap: 9px; }}
     .source-tag::before {{ content: ''; display: block; width: 22px; height: 1px; background: var(--gold); flex-shrink: 0; }}
     .for-you {{ display: inline-block; font-family: 'Courier Prime', monospace; font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bg); background: var(--gold); padding: 2px 6px 1px; border-radius: 2px; box-shadow: 0 0 10px rgba(200,150,62,0.35); }}
-    .hed-xl {{ font-family: 'Playfair Display', serif; font-size: clamp(26px,3.2vw,42px); font-weight: 700; line-height: 1.14; color: var(--text); margin-bottom: 16px; transition: color 0.2s ease; }}
-    .hed-l {{ font-family: 'Playfair Display', serif; font-size: clamp(19px,2.2vw,26px); font-weight: 700; line-height: 1.2; color: var(--text); margin-bottom: 12px; transition: color 0.2s ease; }}
-    .hed-m {{ font-family: 'Playfair Display', serif; font-size: clamp(16px,1.5vw,19px); font-weight: 700; line-height: 1.28; color: var(--text); margin-bottom: 10px; transition: color 0.2s ease; }}
-    article:hover .hed-xl, article:hover .hed-l, article:hover .hed-m {{ color: var(--gold-bright); }}
+    .hed-xl {{ font-family: 'Playfair Display', serif; font-size: clamp(26px,3.2vw,42px); font-weight: 700; line-height: 1.14; color: var(--text); margin-bottom: 16px; }}
+    .hed-l {{ font-family: 'Playfair Display', serif; font-size: clamp(19px,2.2vw,26px); font-weight: 700; line-height: 1.2; color: var(--text); margin-bottom: 12px; }}
+    .hed-m {{ font-family: 'Playfair Display', serif; font-size: clamp(16px,1.5vw,19px); font-weight: 700; line-height: 1.28; color: var(--text); margin-bottom: 10px; }}
+    .hed-xl a, .hed-l a, .hed-m a {{ color: inherit; text-decoration: none; transition: color 0.2s ease; }}
+    .hed-xl a:hover, .hed-l a:hover, .hed-m a:hover {{ color: var(--gold-bright); }}
     .body {{ font-family: 'Lora', serif; font-size: 0.875rem; line-height: 1.78; color: rgba(237,231,213,0.7); }}
     .body + .body {{ margin-top: 10px; }}
     .pull-quote {{ font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.05rem; line-height: 1.55; color: var(--gold-bright); border-left: 2px solid var(--gold); padding-left: 18px; margin: 18px 0; }}
@@ -246,7 +249,7 @@ html = f"""<!DOCTYPE html>
 <body>
   <div class="wrap">
     <header class="masthead">
-      <p class="sources-line">The Rundown AI &nbsp;&middot;&nbsp; Sabrina.dev &nbsp;&middot;&nbsp; Daily Carnage</p>
+      <p class="sources-line">TechCrunch AI &nbsp;&middot;&nbsp; Sabrina.dev &nbsp;&middot;&nbsp; VentureBeat</p>
       <hr class="rule-thin">
       <h1 class="masthead-title">Morning Edition</h1>
       <div class="masthead-meta">
@@ -277,8 +280,8 @@ html = f"""<!DOCTYPE html>
       <div class="colophon">
         <div class="colophon-text">
           Morning Edition is curated daily<br>
-          from The Rundown AI, Sabrina.dev,<br>
-          and Daily Carnage.<br><br>
+          from TechCrunch AI, Sabrina.dev,<br>
+          and VentureBeat.<br><br>
           Stories selected for business owners<br>
           who use AI to do real work.
         </div>
@@ -300,4 +303,4 @@ html = f"""<!DOCTYPE html>
 
 with open("index.html", "w") as f:
     f.write(html)
-print(f"Generated index.html")
+print("Generated index.html")
