@@ -2,7 +2,7 @@ name: Morning Edition
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # 7am CDT
+    - cron: '45 11 * * *'  # 6:45am CDT
   workflow_dispatch:       # manual trigger
 
 permissions:
