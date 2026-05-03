@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-import json, os, re, subprocess
+import json, os, re, subprocess, urllib.request
 from datetime import datetime, date
 
 ANTHROPIC_API_KEY = os.environ["ANTHROPIC_API_KEY"]
@@ -20,10 +20,46 @@ def parse_rss(path, source):
         print(f"Parse error {source}: {e}")
     return stories
 
+def parse_beehiiv_page(index_path, source):
+    """Fetch story titles+descriptions from a Beehiiv publication (no public RSS)."""
+    stories = []
+    try:
+        with open(index_path) as f:
+            html = f.read()
+        slugs = []
+        for slug in re.findall(r'"slug":"([^"]+)"', html):
+            if slug not in slugs:
+                slugs.append(slug)
+            if len(slugs) >= 5:
+                break
+        for slug in slugs:
+            url = f"https://www.superhuman.ai/p/{slug}"
+            try:
+                req = urllib.request.Request(
+                    url, headers={"User-Agent": "Mozilla/5.0 (compatible; MorningEdition/1.0)"}
+                )
+                with urllib.request.urlopen(req, timeout=10) as r:
+                    page = r.read().decode("utf-8", errors="ignore")
+                og_title = re.search(r'property="og:title"\s+content="([^"]+)"', page) or \
+                           re.search(r'content="([^"]+)"\s+property="og:title"', page)
+                og_desc  = re.search(r'property="og:description"\s+content="([^"]{10,}?)"', page) or \
+                           re.search(r'content="([^"]{10,300})"\s+property="og:description"', page)
+                title = og_title.group(1).strip() if og_title else slug.replace("-", " ").title()
+                desc  = og_desc.group(1).strip()[:400] if og_desc else ""
+                if title:
+                    stories.append({"title": title, "link": url, "desc": desc, "source": source})
+            except Exception as e:
+                print(f"Superhuman post fetch error {slug}: {e}")
+    except Exception as e:
+        print(f"Superhuman parse error: {e}")
+    return stories
+
 stories = []
-stories += parse_rss("/tmp/techcrunch.xml", "TechCrunch AI")
-stories += parse_rss("/tmp/sabrina.xml",    "Sabrina.dev")
-stories += parse_rss("/tmp/venturebeat.xml","VentureBeat")
+stories += parse_rss("/tmp/techcrunch.xml",           "TechCrunch AI")
+stories += parse_rss("/tmp/sabrina.xml",               "Sabrina.dev")
+stories += parse_rss("/tmp/venturebeat.xml",           "VentureBeat")
+stories += parse_rss("/tmp/tldr.xml",                  "TLDR Tech")
+stories += parse_beehiiv_page("/tmp/superhuman_index.html", "Superhuman AI")
 print(f"Total parsed: {len(stories)}")
 
 now       = datetime.utcnow()
@@ -63,7 +99,7 @@ Return ONLY a JSON object with exactly this structure. Use ONLY real stories fro
   }}
 }}
 
-Include EXACTLY 10 stories. MANDATORY: at least 2 stories from EACH source (TechCrunch AI, Sabrina.dev, VentureBeat). FOR YOU = directly relevant to Vikki's roles above. Sentence case only. No em dashes. Contractions throughout.
+Include EXACTLY 10 stories. Maximize variety across all available sources — aim for at least 1 story from each source present in the feed. FOR YOU = directly relevant to Vikki's roles above. Sentence case only. No em dashes. Contractions throughout.
 Return ONLY the JSON, no other text."""
 
     resp = subprocess.run([
@@ -267,7 +303,9 @@ if curated:
     colophon_sources = """
             <div class="colophon-source"><strong>TechCrunch AI</strong><br><a href="https://techcrunch.com/category/artificial-intelligence/">techcrunch.com/ai</a></div>
             <div class="colophon-source"><strong>Sabrina Ramonov</strong><br><a href="https://www.sabrina.dev/archive">sabrina.dev/archive</a></div>
-            <div class="colophon-source"><strong>VentureBeat</strong><br><a href="https://venturebeat.com/category/ai/">venturebeat.com/ai</a></div>"""
+            <div class="colophon-source"><strong>VentureBeat</strong><br><a href="https://venturebeat.com/category/ai/">venturebeat.com/ai</a></div>
+            <div class="colophon-source"><strong>TLDR Tech</strong><br><a href="https://tldr.tech">tldr.tech</a></div>
+            <div class="colophon-source"><strong>Superhuman AI</strong><br><a href="https://www.superhuman.ai">superhuman.ai</a></div>"""
 
 else:
     toc_items = '<div class="toc-item">Sources unavailable today.</div>'

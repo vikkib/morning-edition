@@ -19,7 +19,9 @@ jobs:
           curl -sL --max-time 15 'https://techcrunch.com/category/artificial-intelligence/feed/' > /tmp/techcrunch.xml || echo "failed" > /tmp/techcrunch.xml
           curl -sL --max-time 15 'https://www.sabrina.dev/feed' > /tmp/sabrina.xml || echo "failed" > /tmp/sabrina.xml
           curl -sL --max-time 15 'https://feeds.feedburner.com/venturebeat/SZYF' > /tmp/venturebeat.xml || echo "failed" > /tmp/venturebeat.xml
-          wc -c /tmp/techcrunch.xml /tmp/sabrina.xml /tmp/venturebeat.xml
+          curl -sL --max-time 15 'https://tldr.tech/api/rss/tech' > /tmp/tldr.xml || echo "failed" > /tmp/tldr.xml
+          curl -sL --max-time 20 -A "Mozilla/5.0 (compatible; MorningEdition/1.0)" 'https://www.superhuman.ai/' > /tmp/superhuman_index.html || echo "" > /tmp/superhuman_index.html
+          wc -c /tmp/techcrunch.xml /tmp/sabrina.xml /tmp/venturebeat.xml /tmp/tldr.xml /tmp/superhuman_index.html
 
       - name: Generate HTML briefing
         env:
