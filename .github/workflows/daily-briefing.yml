@@ -1,0 +1,22 @@
+name: Daily Briefing
+
+on:
+  schedule:
+    - cron: '30 11 * * *'  # 6:30am CDT
+  workflow_dispatch:
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run daily briefing
+        env:
+          ANTHROPIC_API_KEY:    ${{ secrets.ANTHROPIC_API_KEY }}
+          NOTION_TOKEN:         ${{ secrets.NOTION_TOKEN }}
+          GOOGLE_CLIENT_ID:     ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          SLACK_WEBHOOK:        ${{ secrets.SLACK_WEBHOOK }}
+        run: python3 daily-briefing.py
