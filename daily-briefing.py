@@ -5,7 +5,7 @@ import json, os, urllib.request, urllib.parse
 from datetime import datetime, timezone, timedelta
 
 ANTHROPIC_KEY  = os.environ["ANTHROPIC_API_KEY"]
-NOTION_TOKEN   = os.environ["NOTION_TOKEN"]
+NOTION_TOKEN   = os.environ.get("NOTION_TOKEN")
 NOTION_DB_ID   = "2c5dfa24532581e7922be64559fa22a6"
 GOOGLE_ID      = os.environ["GOOGLE_CLIENT_ID"]
 GOOGLE_SECRET  = os.environ["GOOGLE_CLIENT_SECRET"]
@@ -187,8 +187,8 @@ token  = google_token()
 events = get_calendar_events(token) if token else []
 print(f"Calendar: {len(events)} events")
 
-tasks = get_notion_tasks()
-print(f"Notion: {len(tasks)} tasks")
+tasks = get_notion_tasks() if NOTION_TOKEN else []
+print(f"Notion: {len(tasks)} tasks (token {'present' if NOTION_TOKEN else 'missing — skipped'})")
 
 briefing = call_claude(events, tasks)
 print("Briefing:\n", briefing)
