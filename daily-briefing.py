@@ -194,7 +194,11 @@ briefing = call_claude(events, tasks)
 print("Briefing:\n", briefing)
 
 if briefing:
+    # Save to file so write-obsidian-note.py can pick it up
+    with open("/tmp/briefing.txt", "w") as _f:
+        _f.write(briefing)
     post_slack(briefing)
     print("Posted to Slack.")
 else:
     print("No briefing generated.")
+
