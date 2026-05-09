@@ -5,6 +5,9 @@ on:
     - cron: '30 11 * * *'  # 6:30am CDT
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   brief:
     runs-on: ubuntu-latest
@@ -20,3 +23,14 @@ jobs:
           GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
           SLACK_WEBHOOK:        ${{ secrets.SLACK_WEBHOOK }}
         run: python3 daily-briefing.py
+
+      - name: Write Obsidian daily note
+        run: python3 write-obsidian-note.py
+
+      - name: Commit and push daily note
+        run: |
+          git config user.name "Morning Edition Bot"
+          git config user.email "bot@3bees.digital"
+          git add daily/
+          git commit -m "Daily note $(date '+%Y-%m-%d')" || echo "No changes to commit"
+          git push
